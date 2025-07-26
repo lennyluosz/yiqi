@@ -13,15 +13,17 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
-from django.conf.urls import url, include
+from django.urls import path, include, re_path
 from rest_framework.routers import DefaultRouter
 
 from messagess.views import SysMessagesViewSet, UserMessageListViewSet
 
+app_name = 'messagess'
+
 router = DefaultRouter()
-router.register(r'SysMessages', SysMessagesViewSet, base_name='SysMessagesViewSet')
+router.register(r'SysMessages', SysMessagesViewSet, basename='SysMessagesViewSet')
 
 urlpatterns = [
-    url(r'^', include(router.urls)),
-    url(r'UserMessageListViewSet/$', UserMessageListViewSet.as_view(), name='UserMessageListViewSet'),
+    path('', include(router.urls)),
+    path('UserMessageListViewSet/', UserMessageListViewSet.as_view(), name='UserMessageListViewSet'),
 ]

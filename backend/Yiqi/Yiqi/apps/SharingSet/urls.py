@@ -13,18 +13,19 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
-from django.conf.urls import url, include
+from django.urls import path, include, re_path
 from rest_framework.routers import DefaultRouter
 
 from SharingSet.views import GeneralSharingViewSet, ActivitySharingViewSet
 
+app_name = 'SharingSet'
 
 router = DefaultRouter()
 
-router.register(r'GeneralSharingViewSet', GeneralSharingViewSet, base_name='GeneralSharingViewSet')
-router.register(r'ActivitySharingViewSet', ActivitySharingViewSet, base_name='ActivitySharingViewSet')
+router.register(r'GeneralSharingViewSet', GeneralSharingViewSet, basename='GeneralSharingViewSet')
+router.register(r'ActivitySharingViewSet', ActivitySharingViewSet, basename='ActivitySharingViewSet')
 
 urlpatterns = [
-    url(r'^', include(router.urls)),
+    path('', include(router.urls)),
     # url(r'^UploadTextDateView/$', UploadTextDateView.as_view(), name='UploadTextDateView'),  # 保存活动数据
 ]

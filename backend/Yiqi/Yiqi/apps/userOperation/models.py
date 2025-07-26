@@ -19,9 +19,9 @@ class ActivityUserInfo(models.Model):
         ('0', '活动发起人'),
         ('1', '活动参加人')
     }
-    user = models.ForeignKey(UserProFile, verbose_name='报名用户')
+    user = models.ForeignKey(UserProFile, on_delete=models.CASCADE, verbose_name='报名用户')
     type = models.CharField(choices=TYPE, max_length=1, default='1', verbose_name='报名用户类型')
-    activity = models.ForeignKey(ActivityModel, verbose_name='活动')
+    activity = models.ForeignKey(ActivityModel, on_delete=models.CASCADE, verbose_name='活动')
     username = models.CharField(max_length=3, verbose_name='真实姓名')
     wechat = models.CharField(max_length=20, verbose_name='微信号')
     addtime = models.DateTimeField(default=datetime.now, verbose_name='报名时间')
@@ -38,7 +38,7 @@ class SharingUserModel(models.Model):
     '''
     获取哪个用户分享了
     '''
-    user = models.ForeignKey(UserProFile, verbose_name='分享用户')
+    user = models.ForeignKey(UserProFile, on_delete=models.CASCADE, verbose_name='分享用户')
     addtime = models.DateTimeField(default=datetime.now, verbose_name='分享时间')
 
     class Meta:
@@ -53,8 +53,8 @@ class CollectionUserModel(models.Model):
     '''
     用户活动收藏记录
     '''
-    user = models.ForeignKey(UserProFile, verbose_name='收藏用户')
-    activity = models.ForeignKey(ActivityModel, verbose_name='收藏活动', related_name='activity_dbs')
+    user = models.ForeignKey(UserProFile, on_delete=models.CASCADE, verbose_name='收藏用户')
+    activity = models.ForeignKey(ActivityModel, on_delete=models.CASCADE, verbose_name='收藏活动', related_name='activity_dbs')
     addtime = models.DateTimeField(default=datetime.now, verbose_name='收藏时间')
 
     class Meta:
@@ -69,8 +69,8 @@ class ReporttionUserModel(models.Model):
     '''
     用户活动举报记录
     '''
-    user = models.ForeignKey(UserProFile, verbose_name='举报用户')
-    activity = models.ForeignKey(ActivityModel, verbose_name='举报活动')
+    user = models.ForeignKey(UserProFile, on_delete=models.CASCADE, verbose_name='举报用户')
+    activity = models.ForeignKey(ActivityModel, on_delete=models.CASCADE, verbose_name='举报活动')
     contion = models.TextField(verbose_name='举报理由')
     addtime = models.DateTimeField(default=datetime.now, verbose_name='举报时间')
 
@@ -86,8 +86,8 @@ class BrowseUserModel(models.Model):
     '''
     用户活动浏览记录
     '''
-    user = models.ForeignKey(UserProFile, verbose_name='浏览用户')
-    activity = models.ForeignKey(ActivityModel, verbose_name='浏览活动', related_name='activity_db')
+    user = models.ForeignKey(UserProFile, on_delete=models.CASCADE, verbose_name='浏览用户')
+    activity = models.ForeignKey(ActivityModel, on_delete=models.CASCADE, verbose_name='浏览活动', related_name='activity_db')
     addtime = models.DateTimeField(default=datetime.now, verbose_name='浏览时间')
 
     class Meta:
@@ -102,9 +102,9 @@ class CommentsModels(models.Model):
     '''
     用户的评论model
     '''
-    user = models.ForeignKey(UserProFile, verbose_name='评论用户')
-    activity = models.ForeignKey(ActivityModel, verbose_name='评论活动')
-    parent_comment = models.ForeignKey('CommentsModels', blank=True, null=True, related_name='p_comment',
+    user = models.ForeignKey(UserProFile, on_delete=models.CASCADE, verbose_name='评论用户')
+    activity = models.ForeignKey(ActivityModel, on_delete=models.CASCADE, verbose_name='评论活动')
+    parent_comment = models.ForeignKey('CommentsModels', on_delete=models.CASCADE, blank=True, null=True, related_name='p_comment',
                                        verbose_name='父评论')
     centent = models.TextField(max_length=300, verbose_name='评论内容')
     addtime = models.DateTimeField(default=datetime.now, verbose_name='评论时间')
@@ -121,7 +121,7 @@ class FeedBackModels(models.Model):
     '''
     用户意见反馈
     '''
-    user = models.ForeignKey(UserProFile, verbose_name='反馈用户')
+    user = models.ForeignKey(UserProFile, on_delete=models.CASCADE, verbose_name='反馈用户')
     title = models.CharField(max_length=20, verbose_name='反馈标题')
     centent = models.TextField(max_length=300, verbose_name='反馈内容')
     images = models.ImageField(upload_to='FeedBackModels/%y/%d/{image_file}'.format(image_file=image_file),
@@ -145,10 +145,10 @@ class SysMessages(models.Model):
         ('0', '未读'),
         ('1', '已读')
     }
-    sysuser = models.ForeignKey(SysUserModel, verbose_name='系统用户', related_name='sysuser_messages')
-    user = models.ForeignKey(UserProFile, verbose_name='接收用户')
+    sysuser = models.ForeignKey(SysUserModel, on_delete=models.CASCADE, verbose_name='系统用户', related_name='sysuser_messages')
+    user = models.ForeignKey(UserProFile, on_delete=models.CASCADE, verbose_name='接收用户')
     ISOPEN = models.CharField(max_length=1, default='0', choices=ISOPEN, verbose_name='是否已读')
-    activity = models.ForeignKey(ActivityModel, verbose_name='活动')
+    activity = models.ForeignKey(ActivityModel, on_delete=models.CASCADE, verbose_name='活动')
     titles = models.CharField(max_length=50, verbose_name='消息标题')
     content = models.TextField(default='消息内容')
     addtime = models.DateTimeField(default=datetime.now, verbose_name='消息时间')

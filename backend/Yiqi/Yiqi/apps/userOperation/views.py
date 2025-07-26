@@ -10,7 +10,7 @@ from rest_framework.response import Response
 from rest_framework import authentication
 from utils.permissions import IsOwnerOrReadOnly  # 登陆验证
 from rest_framework.permissions import IsAuthenticated  # 登陆验证
-from rest_framework_jwt.authentication import JSONWebTokenAuthentication  # 身份验证
+from rest_framework_simplejwt.authentication import JWTAuthentication  # 身份验证
 # 身份验证
 # Create your views here.
 
@@ -29,7 +29,7 @@ class SharingUserViewSet(views.APIView):
     '''
     获取分享的用户
     '''
-    authentication_classes = (authentication.SessionAuthentication, JSONWebTokenAuthentication)  # Token验证
+    authentication_classes = (authentication.SessionAuthentication, JWTAuthentication)  # Token验证
     permission_classes = (IsAuthenticated, IsOwnerOrReadOnly)
 
     def post(self, request):
@@ -43,7 +43,7 @@ class BrowseUserViewSet(views.APIView):
     '''
     获取用户浏览记录
     '''
-    authentication_classes = (authentication.SessionAuthentication, JSONWebTokenAuthentication)  # Token验证
+    authentication_classes = (authentication.SessionAuthentication, JWTAuthentication)  # Token验证
     permission_classes = (IsAuthenticated, IsOwnerOrReadOnly)
 
     def post(self, request):
@@ -69,7 +69,7 @@ class QrCodeApiViewset(views.APIView):
     '''
     获取二维码
     '''
-    authentication_classes = (authentication.SessionAuthentication, JSONWebTokenAuthentication)  # Token验证
+    authentication_classes = (authentication.SessionAuthentication, JWTAuthentication)  # Token验证
     permission_classes = (IsAuthenticated, IsOwnerOrReadOnly)
 
     def get(self, request):
@@ -89,7 +89,7 @@ class ActivityUserInfoViewSet(views.APIView):
     '''
     保存报名信息
     '''
-    authentication_classes = (authentication.SessionAuthentication, JSONWebTokenAuthentication)  # Token验证
+    authentication_classes = (authentication.SessionAuthentication, JWTAuthentication)  # Token验证
     permission_classes = (IsAuthenticated, IsOwnerOrReadOnly)
 
     def post(self, request):
@@ -151,7 +151,7 @@ class ClooectionViewSet(views.APIView):
     '''
     收藏，取消收藏功能
     '''
-    authentication_classes = (authentication.SessionAuthentication, JSONWebTokenAuthentication)  # Token验证
+    authentication_classes = (authentication.SessionAuthentication, JWTAuthentication)  # Token验证
     permission_classes = (IsAuthenticated, IsOwnerOrReadOnly)
 
     def post(self, request):
@@ -178,7 +178,7 @@ class ReportionViewSet(views.APIView):
     '''
     用户举报
     '''
-    authentication_classes = (authentication.SessionAuthentication, JSONWebTokenAuthentication)  # Token验证
+    authentication_classes = (authentication.SessionAuthentication, JWTAuthentication)  # Token验证
     permission_classes = (IsAuthenticated, IsOwnerOrReadOnly)
 
     def post(self, request):
@@ -213,7 +213,7 @@ class RegisteredUserViewSet(views.APIView):
     '''
     获取当前报名的用户信息
     '''
-    authentication_classes = (authentication.SessionAuthentication, JSONWebTokenAuthentication)  # Token验证
+    authentication_classes = (authentication.SessionAuthentication, JWTAuthentication)  # Token验证
     permission_classes = (IsAuthenticated, IsOwnerOrReadOnly)
 
     def get(self, request, format=None):
@@ -240,7 +240,7 @@ class UserAllActivityView(mixins.ListModelMixin, mixins.RetrieveModelMixin, view
     '''
     获取当前用户发布的所有信息
     '''
-    authentication_classes = (authentication.SessionAuthentication, JSONWebTokenAuthentication)  # Token验证
+    authentication_classes = (authentication.SessionAuthentication, JWTAuthentication)  # Token验证
     permission_classes = (IsAuthenticated, IsOwnerOrReadOnly)
 
     def get_queryset(self):
@@ -254,7 +254,7 @@ class UserbrowseView(mixins.ListModelMixin, mixins.RetrieveModelMixin, viewsets.
     '''
     获取当前用户浏览的所有信息
     '''
-    authentication_classes = (authentication.SessionAuthentication, JSONWebTokenAuthentication)  # Token验证
+    authentication_classes = (authentication.SessionAuthentication, JWTAuthentication)  # Token验证
     permission_classes = (IsAuthenticated, IsOwnerOrReadOnly)
 
     def get_queryset(self):
@@ -268,7 +268,7 @@ class ActivityUserinfoView(mixins.ListModelMixin, mixins.RetrieveModelMixin, vie
     '''
     获取当前用户浏览的所有信息
     '''
-    authentication_classes = (authentication.SessionAuthentication, JSONWebTokenAuthentication)  # Token验证
+    authentication_classes = (authentication.SessionAuthentication, JWTAuthentication)  # Token验证
     permission_classes = (IsAuthenticated, IsOwnerOrReadOnly)
 
     def get_queryset(self):
@@ -282,7 +282,7 @@ class CollectionUserView(mixins.ListModelMixin, mixins.RetrieveModelMixin, views
     '''
     获取当前用户收藏的所有信息
     '''
-    authentication_classes = (authentication.SessionAuthentication, JSONWebTokenAuthentication)  # Token验证
+    authentication_classes = (authentication.SessionAuthentication, JWTAuthentication)  # Token验证
     permission_classes = (IsAuthenticated, IsOwnerOrReadOnly)
 
     def get_queryset(self):
@@ -296,7 +296,7 @@ class FeedBackViewSet(views.APIView):
     '''
     用户反馈接口
     '''
-    authentication_classes = (authentication.SessionAuthentication, JSONWebTokenAuthentication)  # Token验证
+    authentication_classes = (authentication.SessionAuthentication, JWTAuthentication)  # Token验证
     permission_classes = (IsAuthenticated, IsOwnerOrReadOnly)
 
     def post(self, request):
@@ -322,7 +322,7 @@ class CommentsModelsUserViewSet(views.APIView):
     '''
     获取当前活动的全部评论数据
     '''
-    authentication_classes = (authentication.SessionAuthentication, JSONWebTokenAuthentication)  # Token验证
+    authentication_classes = (authentication.SessionAuthentication, JWTAuthentication)  # Token验证
     permission_classes = (IsAuthenticated, IsOwnerOrReadOnly)
 
     def get(self, request, format=None):

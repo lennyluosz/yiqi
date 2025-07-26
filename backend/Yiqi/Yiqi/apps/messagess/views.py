@@ -11,7 +11,7 @@ from rest_framework.response import Response
 from rest_framework import authentication
 from utils.permissions import IsOwnerOrReadOnly  # 登陆验证
 from rest_framework.permissions import IsAuthenticated  # 登陆验证
-from rest_framework_jwt.authentication import JSONWebTokenAuthentication  # 身份验证
+from rest_framework_simplejwt.authentication import JWTAuthentication  # 身份验证
 # 身份验证
 # Create your views here.
 
@@ -25,7 +25,7 @@ class SysMessagesViewSet(mixins.ListModelMixin, mixins.RetrieveModelMixin, views
     '''
     获取系统消息列表
     '''
-    authentication_classes = (authentication.SessionAuthentication, JSONWebTokenAuthentication)  # Token验证
+    authentication_classes = (authentication.SessionAuthentication, JWTAuthentication)  # Token验证
     permission_classes = (IsAuthenticated, IsOwnerOrReadOnly)
 
     queryset = SysUserModel.objects.all()
@@ -36,7 +36,7 @@ class UserMessageListViewSet(views.APIView):
     '''
     获取系统消息内容
     '''
-    authentication_classes = (authentication.SessionAuthentication, JSONWebTokenAuthentication)  # Token验证
+    authentication_classes = (authentication.SessionAuthentication, JWTAuthentication)  # Token验证
     permission_classes = (IsAuthenticated, IsOwnerOrReadOnly)
 
     def get(self, request, format=None):

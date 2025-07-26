@@ -13,6 +13,10 @@ https://docs.djangoproject.com/en/2.0/ref/settings/
 import os
 import sys
 import datetime
+import pymysql
+
+# 使用PyMySQL替代mysqlclient
+pymysql.install_as_MySQLdb()
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -30,6 +34,15 @@ DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 
+# Django 4.2 required settings
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# CSRF trusted origins (Django 4.2)
+CSRF_TRUSTED_ORIGINS = [
+    'https://*.127.0.0.1',
+    'https://*.localhost',
+]
+
 # Application definition
 
 INSTALLED_APPS = [
@@ -40,7 +53,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'users',
-    'xadmin',
+    'xadmin',  # 重新启用xadmin
     'crispy_forms',
     'rest_framework',
     'django_filters',
@@ -90,7 +103,7 @@ WSGI_APPLICATION = 'Yiqi.wsgi.application'
 CACHES = {
  "default": {
   "BACKEND": "django_redis.cache.RedisCache",
-  "LOCATION": "redis://127.0.0.1:6379/12",
+  "LOCATION": "redis://:A6UBxB4igUNxPRfx3CpYutH353VYo8Atpc@127.0.0.1:6379/12",
   "OPTIONS": {
    "CLIENT_CLASS": "django_redis.client.DefaultClient",
   }
@@ -104,7 +117,7 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'yiqi',
-        'USER': 'root',
+        'USER': 'yiqi',
         'PASSWORD': 'admin123456',
         'HOST': 'localhost',
         'PORT': '3306',
@@ -187,8 +200,7 @@ REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework.authentication.BasicAuthentication',
         'rest_framework.authentication.SessionAuthentication',
-        # 'rest_framework.authentication.TokenAuthentication',
-        # 'rest_framework_jwt.authentication.JSONWebTokenAuthentication',
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
     ),
     'DEFAULT_THROTTLE_CLASSES': (
         'rest_framework.throttling.AnonRateThrottle',
@@ -210,10 +222,39 @@ REST_FRAMEWORK_EXTENSIONS = {
     'DEFAULT_CACHE_RESPONSE_TIMEOUT': 10 * 120
 }
 
-JWT_AUTH = {
-    'JWT_EXPIRATION_DELTA': datetime.timedelta(days=30),
-    'JWT_EXPIRATION_DELTA': datetime.timedelta(days=360),
-    'JWT_AUTH_HEADER_PREFIX': 'JWT',
+# JWT settings (updated for django-rest-framework-simplejwt)
+from datetime import timedelta
+
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(days=30),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=360),
+    'ROTATE_REFRESH_TOKENS': True,
+    'BLACKLIST_AFTER_ROTATION': True,
+    'UPDATE_LAST_LOGIN': False,
+
+    'ALGORITHM': 'HS256',
+    'SIGNING_KEY': SECRET_KEY,
+    'VERIFYING_KEY': None,
+    'AUDIENCE': None,
+    'ISSUER': None,
+    'JWK_URL': None,
+    'LEEWAY': 0,
+
+    'AUTH_HEADER_TYPES': ('Bearer',),
+    'AUTH_HEADER_NAME': 'HTTP_AUTHORIZATION',
+    'USER_ID_FIELD': 'id',
+    'USER_ID_CLAIM': 'user_id',
+    'USER_AUTHENTICATION_RULE': 'rest_framework_simplejwt.authentication.default_user_authentication_rule',
+
+    'AUTH_TOKEN_CLASSES': ('rest_framework_simplejwt.tokens.AccessToken',),
+    'TOKEN_TYPE_CLAIM': 'token_type',
+    'TOKEN_USER_CLASS': 'rest_framework_simplejwt.models.TokenUser',
+
+    'JTI_CLAIM': 'jti',
+
+    'SLIDING_TOKEN_REFRESH_EXP_CLAIM': 'refresh_exp',
+    'SLIDING_TOKEN_LIFETIME': timedelta(minutes=5),
+    'SLIDING_TOKEN_REFRESH_LIFETIME': timedelta(days=1),
 }
 
 REGEX_MOBILE = "^((\d3)|(\d{3}\-))?13[0-9]\d{8}|15[89]\d{8}"

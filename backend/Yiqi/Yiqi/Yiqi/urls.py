@@ -13,19 +13,21 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
-import xadmin
+from django.contrib import admin
+import xadmin  # 重新启用xadmin
 from django.views.static import serve
-from django.conf.urls import url, include
+from django.urls import path, include, re_path
 
 from Yiqi.settings import MEDIA_ROOT, MEDIA_URL, STATIC_ROOT
 
 urlpatterns = [
-    url('YiqiAdmin0001shujian/', include(xadmin.site.urls)),
-    url(r'^upload/(?P<path>.*)$', serve, {'document_root': MEDIA_ROOT}),
-    url(r'^static/(?P<path>.*)$', serve, {'document_root': STATIC_ROOT}),
-    url('^users/', include('users.urls', namespace='users')),
-    url('^activity/', include('activity.urls', namespace='activity')),
-    url('^SharingSet/', include('SharingSet.urls', namespace='SharingSet')),
-    url('^userOperation/', include('userOperation.urls', namespace='userOperation')),
-    url('^messages/', include('messagess.urls', namespace='messages')),
+    path('YiqiAdmin0001shujian/', include(xadmin.site.urls)),  # 重新启用xadmin
+    path('admin/', admin.site.urls),  # 保留Django原生admin作为备用
+    re_path(r'^upload/(?P<path>.*)$', serve, {'document_root': MEDIA_ROOT}),
+    re_path(r'^static/(?P<path>.*)$', serve, {'document_root': STATIC_ROOT}),
+    path('users/', include('users.urls', namespace='users')),
+    path('activity/', include('activity.urls', namespace='activity')),
+    path('SharingSet/', include('SharingSet.urls', namespace='SharingSet')),
+    path('userOperation/', include('userOperation.urls', namespace='userOperation')),
+    path('messages/', include('messagess.urls', namespace='messages')),
 ]

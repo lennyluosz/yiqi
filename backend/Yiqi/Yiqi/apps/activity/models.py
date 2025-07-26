@@ -37,7 +37,7 @@ class ActivityModel(models.Model):
         ('0', '审核中'),
         ('1', '审核通过')
     }
-    user = models.ForeignKey(USER, verbose_name='用户')
+    user = models.ForeignKey(USER, on_delete=models.CASCADE, verbose_name='用户')
     cover_image = models.ImageField(upload_to='Activity/%y/%d/{image_file}'.format(image_file=image_file), null=True,
                                     blank=True, verbose_name='封面图片')
     title = models.CharField(max_length=50, verbose_name='活动标题')
@@ -48,7 +48,7 @@ class ActivityModel(models.Model):
     latitude = models.CharField(max_length=200, verbose_name='纬度')
     longitude = models.CharField(max_length=200, verbose_name='经度')
     registration_number = models.IntegerField(default=0, verbose_name='用户报名数')
-    activitytype = models.ForeignKey(ActivityTypeModel, verbose_name='活动类别', related_name='activitytype')
+    activitytype = models.ForeignKey(ActivityTypeModel, on_delete=models.CASCADE, verbose_name='活动类别', related_name='activitytype')
     limitnum = models.IntegerField(default=10, verbose_name='限制人数')
     username = models.CharField(max_length=3, verbose_name='真实姓名')
     wechat = models.CharField(max_length=20, verbose_name='微信号')
@@ -71,7 +71,7 @@ class ActivityImagesModel(models.Model):
     '''
     活动图片
     '''
-    activity = models.ForeignKey(ActivityModel, verbose_name='活动', related_name='activity_images')
+    activity = models.ForeignKey(ActivityModel, on_delete=models.CASCADE, verbose_name='活动', related_name='activity_images')
     image = models.ImageField(upload_to='ActivityImagesModel/%y/%d/{image_file}'.format(image_file=image_file),
                               null=True,
                               blank=True, verbose_name='活动图片')
@@ -90,7 +90,7 @@ class SlideModels(models.Model):
     '''
     首页幻灯片
     '''
-    activity = models.ForeignKey(ActivityModel, verbose_name='活动')
+    activity = models.ForeignKey(ActivityModel, on_delete=models.CASCADE, verbose_name='活动')
     image = models.ImageField(upload_to='SlideModels/%y/%d/{image_file}'.format(image_file=image_file),
                               null=True,
                               blank=True, verbose_name='幻灯片图片')

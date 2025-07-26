@@ -9,7 +9,7 @@ from django.http import HttpResponse, HttpResponseNotFound
 from django.template import loader
 from django.utils.http import urlencode
 from django.utils.encoding import force_text, smart_text
-from django.utils.translation import ugettext_lazy as _, ugettext
+from django.utils.translation import gettext_lazy as _, ugettext
 
 from xadmin.plugins.utils import get_context_dict
 from xadmin.sites import site

@@ -8,7 +8,7 @@ from rest_framework.response import Response
 from rest_framework import authentication
 from utils.permissions import IsOwnerOrReadOnly  # 登陆验证
 from rest_framework.permissions import IsAuthenticated  # 登陆验证
-from rest_framework_jwt.authentication import JSONWebTokenAuthentication  # 身份验证
+from rest_framework_simplejwt.authentication import JWTAuthentication  # 身份验证
 # 身份验证
 
 # 过滤
@@ -43,7 +43,7 @@ class ActivityTypeView(mixins.ListModelMixin, mixins.RetrieveModelMixin, viewset
     '''
     获取全部活动分类
     '''
-    authentication_classes = (authentication.SessionAuthentication, JSONWebTokenAuthentication)  # Token验证
+    authentication_classes = (authentication.SessionAuthentication, JWTAuthentication)  # Token验证
     permission_classes = (IsAuthenticated, IsOwnerOrReadOnly)
 
     queryset = ActivityTypeModel.objects.all().order_by('indexnum')
@@ -54,7 +54,7 @@ class UploadTextDateView(views.APIView):
     '''
     发布活动
     '''
-    authentication_classes = (authentication.SessionAuthentication, JSONWebTokenAuthentication)  # Token验证
+    authentication_classes = (authentication.SessionAuthentication, JWTAuthentication)  # Token验证
     permission_classes = (IsAuthenticated, IsOwnerOrReadOnly)
 
     def post(self, request):
@@ -151,7 +151,7 @@ class SlideIndexViewSet(mixins.ListModelMixin, mixins.RetrieveModelMixin, viewse
     '''
     获取首页幻灯片
     '''
-    authentication_classes = (authentication.SessionAuthentication, JSONWebTokenAuthentication)  # Token验证
+    authentication_classes = (authentication.SessionAuthentication, JWTAuthentication)  # Token验证
     permission_classes = (IsAuthenticated, IsOwnerOrReadOnly)
 
     queryset = SlideModels.objects.all().order_by('indexnum')
@@ -162,7 +162,7 @@ class SearchAllDateViewSet(mixins.ListModelMixin, mixins.RetrieveModelMixin, vie
     '''
     数据搜索
     '''
-    authentication_classes = (authentication.SessionAuthentication, JSONWebTokenAuthentication)  # Token验证
+    authentication_classes = (authentication.SessionAuthentication, JWTAuthentication)  # Token验证
     permission_classes = (IsAuthenticated, IsOwnerOrReadOnly)
 
     queryset = ActivityModel.objects.filter(audit='1', istrue=True, thedraft=True).order_by('-addtime')
@@ -177,7 +177,7 @@ class MapModelAllDateViewSet(mixins.ListModelMixin, mixins.RetrieveModelMixin, v
     '''
     地图数据
     '''
-    authentication_classes = (authentication.SessionAuthentication, JSONWebTokenAuthentication)  # Token验证
+    authentication_classes = (authentication.SessionAuthentication, JWTAuthentication)  # Token验证
     permission_classes = (IsAuthenticated, IsOwnerOrReadOnly)
     queryset = ActivityModel.objects.filter(audit='1', istrue=True, thedraft=True, startdate__gt=now).order_by(
         '-addtime')
@@ -188,7 +188,7 @@ class StartAllDataViewSet(mixins.ListModelMixin, mixins.RetrieveModelMixin, view
     '''
     获取即将开始的数据
     '''
-    authentication_classes = (authentication.SessionAuthentication, JSONWebTokenAuthentication)  # Token验证
+    authentication_classes = (authentication.SessionAuthentication, JWTAuthentication)  # Token验证
     permission_classes = (IsAuthenticated, IsOwnerOrReadOnly)
 
     now = datetime.datetime.now()
@@ -206,7 +206,7 @@ class RegistrationAllDataViewSet(mixins.ListModelMixin, mixins.RetrieveModelMixi
     '''
     获取热门数据，这里按照报名人数进行排序只显示
     '''
-    authentication_classes = (authentication.SessionAuthentication, JSONWebTokenAuthentication)  # Token验证
+    authentication_classes = (authentication.SessionAuthentication, JWTAuthentication)  # Token验证
     permission_classes = (IsAuthenticated, IsOwnerOrReadOnly)
 
     now = datetime.datetime.now()

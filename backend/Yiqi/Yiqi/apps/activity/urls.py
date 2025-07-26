@@ -13,22 +13,24 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
-from django.conf.urls import url, include
+from django.urls import path, include, re_path
 from rest_framework.routers import DefaultRouter
 
 from activity.views import ActivityTypeView, UploadTextDateView, SlideIndexViewSet, SearchAllDateViewSet, \
     MapModelAllDateViewSet, StartAllDataViewSet, RegistrationAllDataViewSet
 
+app_name = 'activity'
+
 router = DefaultRouter()
 
-router.register(r'ActivityTypeView', ActivityTypeView, base_name='ActivityTypeView')  # 登陆
-router.register(r'SlideIndexViewSet', SlideIndexViewSet, base_name='SlideIndexViewSet')
-router.register(r'SearchAllDateViewSet', SearchAllDateViewSet, base_name='SearchAllDateViewSet')
-router.register(r'MapModelAllDateViewSet', MapModelAllDateViewSet, base_name='MapModelAllDateViewSet')
-router.register(r'StartAllDataViewSet', StartAllDataViewSet, base_name='StartAllDataViewSet')
-router.register(r'RegistrationAllDataViewSet', RegistrationAllDataViewSet, base_name='RegistrationAllDataViewSet')
+router.register(r'ActivityTypeView', ActivityTypeView, basename='ActivityTypeView')  # 登陆
+router.register(r'SlideIndexViewSet', SlideIndexViewSet, basename='SlideIndexViewSet')
+router.register(r'SearchAllDateViewSet', SearchAllDateViewSet, basename='SearchAllDateViewSet')
+router.register(r'MapModelAllDateViewSet', MapModelAllDateViewSet, basename='MapModelAllDateViewSet')
+router.register(r'StartAllDataViewSet', StartAllDataViewSet, basename='StartAllDataViewSet')
+router.register(r'RegistrationAllDataViewSet', RegistrationAllDataViewSet, basename='RegistrationAllDataViewSet')
 
 urlpatterns = [
-    url(r'^', include(router.urls)),
-    url(r'^UploadTextDateView/$', UploadTextDateView.as_view(), name='UploadTextDateView'),  # 保存活动数据
+    path('', include(router.urls)),
+    path('UploadTextDateView/', UploadTextDateView.as_view(), name='UploadTextDateView'),  # 保存活动数据
 ]

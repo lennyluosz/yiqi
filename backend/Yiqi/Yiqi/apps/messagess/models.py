@@ -34,7 +34,7 @@ class SysUserthemenuModel(models.Model):
     '''
     系统消息底部菜单
     '''
-    sysuser = models.ForeignKey(SysUserModel, verbose_name='系统用户', related_name='sysusers')
+    sysuser = models.ForeignKey(SysUserModel, on_delete=models.CASCADE, verbose_name='系统用户', related_name='sysusers')
     themenu_name = models.CharField(max_length=10, verbose_name='菜单名称')
     urls = models.CharField(max_length=255, verbose_name='小程序跳转路径')
     addtime = models.DateTimeField(default=datetime.now, verbose_name='添加时间')

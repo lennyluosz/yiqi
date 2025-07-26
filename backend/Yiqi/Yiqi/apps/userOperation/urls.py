@@ -13,29 +13,31 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
-from django.conf.urls import url, include
+from django.urls import path, include, re_path
 from rest_framework.routers import DefaultRouter
 
 from userOperation.views import SharingUserViewSet, BrowseUserViewSet, QrCodeApiViewset, ActivityUserInfoViewSet, \
     ClooectionViewSet, ReportionViewSet, RegisteredUserViewSet, CommentsModelsUserViewSet, UserAllActivityView, \
     UserbrowseView, CollectionUserView, ActivityUserinfoView, FeedBackViewSet
 
+app_name = 'userOperation'
+
 router = DefaultRouter()
 
-router.register(r'UserAllActivityView', UserAllActivityView, base_name='UserAllActivityView')
-router.register(r'UserbrowseView', UserbrowseView, base_name='UserbrowseView')
-router.register(r'CollectionUserView', CollectionUserView, base_name='CollectionUserView')
-router.register(r'ActivityUserinfoView', ActivityUserinfoView, base_name='ActivityUserinfoView')
+router.register(r'UserAllActivityView', UserAllActivityView, basename='UserAllActivityView')
+router.register(r'UserbrowseView', UserbrowseView, basename='UserbrowseView')
+router.register(r'CollectionUserView', CollectionUserView, basename='CollectionUserView')
+router.register(r'ActivityUserinfoView', ActivityUserinfoView, basename='ActivityUserinfoView')
 
 urlpatterns = [
-    url(r'^', include(router.urls)),
-    url(r'^SharingUserViewSet/$', SharingUserViewSet.as_view(), name='SharingUserViewSet'),  # 保存活动数据
-    url(r'BrowseUserViewSet/$', BrowseUserViewSet.as_view(), name='BrowseUserViewSet'),  # 保存浏览用户
-    url(r'QrCodeApi/$', QrCodeApiViewset.as_view(), name='QrCodeApiViewset'),
-    url(r'ActivityUserInfo/$', ActivityUserInfoViewSet.as_view(), name='ActivityUserInfo'),
-    url(r'ClooectionViewSet/$', ClooectionViewSet.as_view(), name='ClooectionViewSet'),
-    url(r'ReportionViewSet/$', ReportionViewSet.as_view(), name='ReportionViewSet'),
-    url(r'RegisteredUserViewSet/$', RegisteredUserViewSet.as_view(), name='RegisteredUserViewSet'),
-    url(r'CommentsModelsUserViewSet/$', CommentsModelsUserViewSet.as_view(), name='CommentsModelsUserViewSet'),
-    url(r'FeedBackViewSet/$', FeedBackViewSet.as_view(), name='FeedBackViewSet')
+    path('', include(router.urls)),
+    path('SharingUserViewSet/', SharingUserViewSet.as_view(), name='SharingUserViewSet'),  # 保存活动数据
+    path('BrowseUserViewSet/', BrowseUserViewSet.as_view(), name='BrowseUserViewSet'),  # 保存浏览用户
+    path('QrCodeApi/', QrCodeApiViewset.as_view(), name='QrCodeApiViewset'),
+    path('ActivityUserInfo/', ActivityUserInfoViewSet.as_view(), name='ActivityUserInfo'),
+    path('ClooectionViewSet/', ClooectionViewSet.as_view(), name='ClooectionViewSet'),
+    path('ReportionViewSet/', ReportionViewSet.as_view(), name='ReportionViewSet'),
+    path('RegisteredUserViewSet/', RegisteredUserViewSet.as_view(), name='RegisteredUserViewSet'),
+    path('CommentsModelsUserViewSet/', CommentsModelsUserViewSet.as_view(), name='CommentsModelsUserViewSet'),
+    path('FeedBackViewSet/', FeedBackViewSet.as_view(), name='FeedBackViewSet')
 ]

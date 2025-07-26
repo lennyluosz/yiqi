@@ -9,7 +9,7 @@ from rest_framework.response import Response
 from rest_framework import authentication
 from utils.permissions import IsOwnerOrReadOnly  # 登陆验证
 from rest_framework.permissions import IsAuthenticated  # 登陆验证
-from rest_framework_jwt.authentication import JSONWebTokenAuthentication  # 身份验证
+from rest_framework_simplejwt.authentication import JWTAuthentication  # 身份验证
 # 身份验证
 
 # Create your views here.
@@ -41,7 +41,7 @@ class ActivitySharingViewSet(SharingViewSet):
     '''
     获取活动页面分享数据
     '''
-    authentication_classes = (authentication.SessionAuthentication, JSONWebTokenAuthentication)  # Token验证
+    authentication_classes = (authentication.SessionAuthentication, JWTAuthentication)  # Token验证
     permission_classes = (IsAuthenticated, IsOwnerOrReadOnly)
 
     SET_PATH = '1'
@@ -51,7 +51,7 @@ class ReleaseSharingViewSet(SharingViewSet):
     '''
     获取发布页面分享数据
     '''
-    authentication_classes = (authentication.SessionAuthentication, JSONWebTokenAuthentication)  # Token验证
+    authentication_classes = (authentication.SessionAuthentication, JWTAuthentication)  # Token验证
     permission_classes = (IsAuthenticated, IsOwnerOrReadOnly)
 
     SET_PATH = '2'
@@ -61,7 +61,7 @@ class FoundSharingViewSet(SharingViewSet):
     '''
     获取发现页面分享数据
     '''
-    authentication_classes = (authentication.SessionAuthentication, JSONWebTokenAuthentication)  # Token验证
+    authentication_classes = (authentication.SessionAuthentication, JWTAuthentication)  # Token验证
     permission_classes = (IsAuthenticated, IsOwnerOrReadOnly)
 
     SET_PATH = '3'
@@ -71,7 +71,7 @@ class MessagesSharingViewSet(SharingViewSet):
     '''
     获取消息页面分享数据
     '''
-    authentication_classes = (authentication.SessionAuthentication, JSONWebTokenAuthentication)  # Token验证
+    authentication_classes = (authentication.SessionAuthentication, JWTAuthentication)  # Token验证
     permission_classes = (IsAuthenticated, IsOwnerOrReadOnly)
 
     SET_PATH = '4'
@@ -81,7 +81,7 @@ class ContentSharingViewSet(SharingViewSet):
     '''
     获取内容页面分享数据
     '''
-    authentication_classes = (authentication.SessionAuthentication, JSONWebTokenAuthentication)  # Token验证
+    authentication_classes = (authentication.SessionAuthentication, JWTAuthentication)  # Token验证
     permission_classes = (IsAuthenticated, IsOwnerOrReadOnly)
 
     SET_PATH = '5'

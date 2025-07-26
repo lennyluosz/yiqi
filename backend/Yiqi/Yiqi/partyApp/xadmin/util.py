@@ -4,14 +4,23 @@ from django.db import models
 from django.db.models.sql.query import LOOKUP_SEP
 from django.db.models.deletion import Collector
 from django.db.models.fields.related import ForeignObjectRel
-from django.forms.forms import pretty_name
-from django.utils import formats, six
+# from django.forms.forms import pretty_name  # 在Django 4.2中已移除
+from django.utils import formats
+
+# Django 4.2兼容: 实现pretty_name函数
+def pretty_name(name):
+    """Convert 'first_name' to 'First name'"""
+    if not name:
+        return ''
+    return capfirst(name.replace('_', ' '))
 from django.utils.html import escape
 from django.utils.safestring import mark_safe
 from django.utils.text import capfirst
-from django.utils.encoding import force_text, smart_text, smart_str
-from django.utils.translation import ungettext
-from django.core.urlresolvers import reverse
+from django.utils.encoding import smart_str
+smart_text = smart_str  # Django 4.2兼容
+force_text = smart_str  # Django 4.2兼容
+from django.utils.translation import ngettext as ungettext
+from django.urls import reverse
 from django.conf import settings
 from django.forms import Media
 from django.utils.translation import get_language

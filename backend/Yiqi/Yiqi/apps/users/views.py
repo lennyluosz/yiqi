@@ -15,97 +15,82 @@ from utils.permissions import IsOwnerOrReadOnly  # 登陆验证
 from rest_framework.mixins import CreateModelMixin
 from django.contrib.auth.backends import ModelBackend
 from rest_framework.permissions import IsAuthenticated  # 登陆验证
-from rest_framework_jwt.views import JSONWebTokenAPIView  # 重写jwt的认证
+from rest_framework_simplejwt.views import TokenObtainPairView  # 重写jwt的认证
 from utils.weixin_util.weixin.lib.wxcrypt import WXBizDataCrypt
 from django.contrib.auth.hashers import make_password, check_password
-from rest_framework_jwt.authentication import JSONWebTokenAuthentication
-from rest_framework_jwt.serializers import (
-    JSONWebTokenSerializer
-)
-from rest_framework_jwt.settings import api_settings
+from rest_framework_simplejwt.authentication import JWTAuthentication
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
+from rest_framework_simplejwt.tokens import RefreshToken
 from Yiqi.sys_info import MINI_APP_ID, MINI_APP_SECRET
 from users.models import UserProFile
 from Yiqi.settings import BASE_DIR
 from Yiqi.settings import IMAGES_URL
 from users.Serializers import UserRegSerializer
 
-jwt_response_payload_handler = api_settings.JWT_RESPONSE_PAYLOAD_HANDLER
-
 
 # Create your views here.
-class READJSONWebTokenAPIView(JSONWebTokenAPIView):
+class WeChatTokenObtainPairView(views.APIView):
     """
-    API View that receives a POST with a user's username and password.
-
-    Returns a JSON Web Token that can be used for authenticated requests.
+    微信小程序JWT认证视图
+    接收微信小程序的code和加密数据，返回JWT token
     """
-
-    def get_serializer_context(self):
-        """
-        Extra context provided to the serializer class.
-        """
+    
+    def post(self, request, *args, **kwargs):
         try:
-            username = self.request.data
-
+            data = request.data
             api = WXAPPAPI(appid=MINI_APP_ID, app_secret=MINI_APP_SECRET)
-            code = username['code']  # 获取到code
+            code = data['code']  # 获取到code
             session_info = api.exchange_code_for_session_key(code=code)
             session_key = session_info.get('session_key')
             crypt = WXBizDataCrypt(MINI_APP_ID, session_key)
-            encrypted_data = username['username']  # 获取到encrypted_data
-            iv = username['password']  # 获取到iv
+            encrypted_data = data['username']  # 获取到encrypted_data
+            iv = data['password']  # 获取到iv
             user_info = crypt.decrypt(encrypted_data, iv)  # 获取到用户的登陆信息
 
             # 获取用户的信息
             openid = user_info['openId']  # 获取openid
             avatarUrl = user_info['avatarUrl']  # 获取到头像
             nickName = user_info['nickName']  # 获取昵称
+            
             # 找到用户更新用户的微信昵称和头像
-            this_user = UserProFile.objects.filter(openid=openid)
-
+            this_user = UserProFile.objects.filter(openid=openid).first()
+            
             if this_user:
-                this_user = this_user[0]
                 this_user.avatarUrl = avatarUrl
                 this_user.nickName = nickName
-                # this_user.avatar = 'avatar/' + openid + '.png'
                 this_user.save()
-
-            username['username'] = openid
-            username['password'] = openid
-            del username['code']
-        except:
-            pass
-
-        return {
-            'request': self.request,
-            'view': self,
-        }
-
-    def post(self, request, *args, **kwargs):
-        serializer = self.get_serializer(data=request.data)
-        if serializer.is_valid():
-            user = serializer.object.get('user') or request.user
-            token = serializer.object.get('token')
-            response_data = jwt_response_payload_handler(token, user, request)
-            response = Response(response_data)
-            if api_settings.JWT_AUTH_COOKIE:
-                expiration = (datetime.utcnow() +
-                              api_settings.JWT_EXPIRATION_DELTA)
-                response.set_cookie(api_settings.JWT_AUTH_COOKIE,
-                                    token,
-                                    expires=expiration,
-                                    httponly=True)
-            return response
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            else:
+                # 如果用户不存在，创建新用户
+                this_user = UserProFile.objects.create(
+                    username=openid,
+                    openid=openid,
+                    avatarUrl=avatarUrl,
+                    nickName=nickName
+                )
+            
+            # 生成JWT token
+            refresh = RefreshToken.for_user(this_user)
+            access_token = refresh.access_token
+            
+            return Response({
+                'access': str(access_token),
+                'refresh': str(refresh),
+                'user_id': this_user.id,
+                'username': this_user.username,
+            })
+            
+        except Exception as e:
+            return Response({
+                'error': str(e)
+            }, status=status.HTTP_400_BAD_REQUEST)
 
 
-class ObtainJSONWebToken(READJSONWebTokenAPIView):
+# 保持向后兼容的别名
+class ObtainJSONWebToken(WeChatTokenObtainPairView):
     """
-    API View that receives a POST with a user's username and password.
-
-    Returns a JSON Web Token that can be used for authenticated requests.
+    向后兼容的JWT认证视图
     """
-    serializer_class = JSONWebTokenSerializer
+    pass
 
 
 class CustomBackend(ModelBackend):
@@ -136,7 +121,7 @@ class Registered(CreateModelMixin, mixins.UpdateModelMixin, mixins.RetrieveModel
     serializer_class = UserRegSerializer
     queryset = UserProFile.objects.all()
 
-    authentication_classes = (authentication.SessionAuthentication, JSONWebTokenAuthentication)  # 认证
+    authentication_classes = (authentication.SessionAuthentication, JWTAuthentication)  # 认证
 
     def get_permissions(self):
         '''
@@ -226,7 +211,7 @@ class GetUser(views.APIView):
     '''
     修改和获取用户的个人信息
     '''
-    authentication_classes = (authentication.SessionAuthentication, JSONWebTokenAuthentication)  # Token验证
+    authentication_classes = (authentication.SessionAuthentication, JWTAuthentication)  # Token验证
     permission_classes = (IsAuthenticated, IsOwnerOrReadOnly)
 
     def get(self, request):
