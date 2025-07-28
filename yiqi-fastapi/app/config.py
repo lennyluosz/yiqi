@@ -4,7 +4,7 @@ from typing import List, Optional
 
 class Settings(BaseSettings):
     # 应用基础配置
-    app_name: str = "一起呦"
+    app_name: str = "天域同途"
     version: str = "2.0.0"
     debug: bool = True
     secret_key: str

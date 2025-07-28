@@ -15,7 +15,7 @@ def start_server():
 def test_admin_lists():
     """测试admin列表页面访问"""
     base_url = "http://localhost:8002"
-    admin_base_url = f"{base_url}/YiqiAdmin0001shujian"
+    admin_base_url = f"{base_url}/admin"
     
     # 要测试的列表页面
     test_pages = [

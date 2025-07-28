@@ -16,7 +16,7 @@ from app.admin.admin import admin
 app = FastAPI(
     title=settings.app_name,
     version=settings.version,
-    description="一起呦 - 微信小程序后端API",
+    description="天域同途 - 微信小程序后端API",
     docs_url="/docs" if settings.debug else None,
     redoc_url="/redoc" if settings.debug else None,
 )

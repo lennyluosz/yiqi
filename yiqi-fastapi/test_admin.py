@@ -15,7 +15,7 @@ def start_server():
 def test_admin_access():
     """测试admin界面访问"""
     base_url = "http://localhost:8001"
-    admin_url = f"{base_url}/YiqiAdmin0001shujian/"
+    admin_url = f"{base_url}/admin/"
     
     print("🚀 启动测试服务器...")
     

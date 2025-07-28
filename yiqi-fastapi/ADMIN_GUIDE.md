@@ -1,4 +1,4 @@
-# 一起呦管理系统使用指南
+# 天域同途管理系统使用指南
 
 ## 🎯 系统概述
 
@@ -16,7 +16,7 @@ python -m uvicorn app.main:app --host 0.0.0.0 --port 8001 --reload
 ```
 
 ### 2. 访问管理界面
-- **URL**: http://localhost:8001/YiqiAdmin0001shujian/
+- **URL**: http://localhost:8001/admin/
 - **用户名**: admin
 - **密码**: admin123456
 
