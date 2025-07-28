@@ -222,15 +222,31 @@ class SQLAlchemyModelView(BaseModelView):
     def _apply_order_by(self, query, order_by):
         """应用排序"""
         for order_clause in order_by:
-            if " " in order_clause:
-                field, direction = order_clause.split(" ", 1)
-                direction = direction.lower()
-                
+            if isinstance(order_clause, tuple):
+                # 处理 (field, desc_flag) 格式
+                field, is_desc = order_clause
                 if hasattr(self.model, field):
                     attr = getattr(self.model, field)
-                    if direction == "desc":
+                    if is_desc:
                         query = query.order_by(desc(attr))
                     else:
+                        query = query.order_by(asc(attr))
+            elif isinstance(order_clause, str):
+                # 处理字符串格式，兼容之前的实现
+                if " " in order_clause:
+                    field, direction = order_clause.split(" ", 1)
+                    direction = direction.lower()
+                    
+                    if hasattr(self.model, field):
+                        attr = getattr(self.model, field)
+                        if direction == "desc":
+                            query = query.order_by(desc(attr))
+                        else:
+                            query = query.order_by(asc(attr))
+                else:
+                    # 只有字段名，默认升序
+                    if hasattr(self.model, order_clause):
+                        attr = getattr(self.model, order_clause)
                         query = query.order_by(asc(attr))
         return query
 
@@ -250,6 +266,9 @@ class UserAdmin(SQLAlchemyModelView):
         
         # 排序字段
         self.sortable_fields = ["name", "mobile", "created_at"]
+        
+        # 默认排序
+        self.fields_default_sort = [("created_at", True)]  # 按创建时间降序
         
         # 列表页排除字段
         self.exclude_fields_from_list = ["hashed_password", "openid", "user_bh", "avatar_url", "background"]
@@ -312,6 +331,7 @@ class SharingSetAdmin(SQLAlchemyModelView):
         
         self.searchable_fields = ["title"]
         self.sortable_fields = ["title", "page_type", "created_at"]
+        self.fields_default_sort = [("created_at", True)]  # 按创建时间降序
         self.page_size = 25
 
 
@@ -406,6 +426,7 @@ class SysUserAdmin(SQLAlchemyModelView):
         
         self.searchable_fields = ["name", "introduction"]
         self.sortable_fields = ["name", "created_at"]
+        self.fields_default_sort = [("created_at", True)]  # 按创建时间降序
         self.page_size = 25
 
 
